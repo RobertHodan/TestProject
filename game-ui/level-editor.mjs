@@ -6,8 +6,8 @@ import { selectableGroup } from '../primer/component-mutators/selectable-group.m
 import { getSearchableItemBank } from '../primer/managers/searchable-item-bank.mjs';
 import { stringToSVG } from '../primer/utils/svg.mjs';
 import { isNotString } from '../primer/utils/utils.mjs';
-import { Component } from '/primer/components/component.mjs';
 import '../primer/components/grid-scroll/grid-scroll.mjs';
+import { Component } from '../primer/components/component.mjs';
 
 const defaults = {
     // action: noop,
@@ -20,6 +20,11 @@ export class LevelEditor extends Component {
     }
 
     initialize() {
+        if (this.isInitialized) {
+            return;
+        }
+        super.initialize();
+
         this.classList.add('level-editor');
 
         this.keyNext = 1;
@@ -38,6 +43,7 @@ export class LevelEditor extends Component {
         this.createObjectItems();
         this.createCollectibleItems();
         this.createInteractableItems();
+        this.createOptionsModal();
 
         setTimeout(() => {
             this.showItemsByTag('terrain');
@@ -50,6 +56,7 @@ export class LevelEditor extends Component {
 
     createModeSelector() {
         const bar = document.createElement('c-component');
+        bar.initialize();
         bar.classList.add('mode-selector');
 
         selectableGroup(bar);
@@ -122,6 +129,7 @@ export class LevelEditor extends Component {
                 }
             });
         }
+        container.initialize();
 
         this.append(container);
     }
@@ -132,7 +140,7 @@ export class LevelEditor extends Component {
             svg = key;
             key = `level-editor-${this.keyNext++}`;
         }
-        const btn = document.createElement('c-component');
+        const btn = document.createElement('component-base');
         btn.classList.add('item');
         btn.append(svg);
 
@@ -189,6 +197,10 @@ export class LevelEditor extends Component {
         for (let i = 0; i < 25; i++) {
             this.createPageItem(stringToSVG(`<svg>${i + 1} - Interactable</svg>`), tags);
         }
+    }
+
+    createOptionsModal() {
+
     }
 }
 customElements.define('c-level-editor', LevelEditor);

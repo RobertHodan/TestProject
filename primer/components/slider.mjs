@@ -25,15 +25,21 @@ const defaults = {
 }
 
 export class Slider extends Component {
+  constructor() {
+    super();
+  }
+
   /**
    *
    * @param {SliderParams} settings
    */
-  constructor(settings) {
-    settings = { ...defaults, ...settings };
+  initialize(settings) {
+    super.initialize();
 
-    settings.tagName = 'div',
-      super(settings);
+    if (this.isInitialized) {
+      return;
+    }
+
     this.el.classList.add('slider');
 
     valuable(this, {

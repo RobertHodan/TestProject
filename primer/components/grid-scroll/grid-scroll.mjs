@@ -20,6 +20,11 @@ export class GridScroll extends Component {
     }
 
     initialize() {
+        if (this.isInitialized) {
+            return;
+        }
+        super.initialize();
+
         this.classList.add('mode-container');
         this.classList.add('grid-scroll');
 
@@ -62,7 +67,7 @@ export class GridScroll extends Component {
         };
 
         if (this.pendingItemUpdate) {
-            const { scrollY } = this.simulatedScrollable;
+            const { scrollY } = itemList.simulatedScrollable;
             this.handleItemScrolling(0, scrollY);
         }
     }

@@ -1,68 +1,31 @@
 import { actionable } from '../component-mutators/actionable.mjs';
-import { noop } from '../utils/utils.mjs';
 import { Component } from './component.mjs';
 
+const defaults = {
+  // action: noop,
+}
+
 export class TextField extends Component {
+  /**
+   *
+   * @param {ComponentParams} settings
+   */
   constructor(settings) {
+    settings = { ...defaults, ...settings };
+
     super(settings);
 
-    this.value = ""; // temporary until initialization
-    this.name = "";
-    this.onSubmit = noop;
+    actionable(this);
   }
 
   initialize() {
-    super.initialize();
-
-    actionable(this);
-
     const input = document.createElement('input');
-    input.name = this.name;
-    input.type = 'text';
-    if (this.value) {
-      input.setAttribute('value', this.value);
+    if (this.settings.textValue) {
+      input.setAttribute('value', this.settings.textValue);
     }
 
     this.append(input);
-    delete this.value;
-  }
-
-  getInput() {
-    return this.getElementsByTagName('input')[0];
-  }
-
-  action() {
-    const input = this.getInput();
-    if (input) {
-      this.value = input.value
-    }
-
-    this.onSubmit();
-  }
-
-  getValue() {
-    const input = this.getInput();
-    if (input) {
-      return input.value;
-    } else {
-      return this.value;
-    }
-  }
-
-  focus() {
-    const input = this.getInput();
-    if (input) {
-      input.focus();
-    }
-  }
-
-  setValue(value) {
-    const input = this.getInput();
-    if (input) {
-      input.value = value;
-    } else {
-      this.value = value;
-    }
   }
 }
-customElements.define('c-textfield', TextField);
+
+customElements.define('text-field', TextField);

@@ -1,4 +1,7 @@
 import "../primer/components/component.mjs";
+import { Component } from "../primer/components/component.mjs";
+import { Slider } from "../primer/components/slider.mjs";
+import { splitString } from "../primer/utils/string.mjs";
 import { clearElement, isString } from "../primer/utils/utils.mjs";
 
 export const OPTIONTYPE = {
@@ -10,13 +13,17 @@ for (const option of Object.keys(OPTIONTYPE)) {
     validOptions.push(OPTIONTYPE[option]);
 }
 
-const container = document.createElement('div');
+const container = document.createElement('c-component');
 container.classList.add('temp-options');
 
+const componentPool = {
+
+};
+
 /**
- * Creates a temporary options list. Previous options list becomes obsolete
- *  the moment a new options list is created, with previous components being
- *  recycled back into new lists.
+ * Creates a temporary options list - only one can exist at any time. Previous options 
+ *  list becomes obsolete the moment a new options list is created, with previous 
+ *  components being recycled back into new lists.
  * 
  * options = {
  *  [OptionName:String]: [OPTIONTYPE],
@@ -24,20 +31,25 @@ container.classList.add('temp-options');
  * } 
  */
 export function createTempOptions(options) {
+    const keys = Object.keys(options);
 
+    clearContainer();
 
+    for (const key of keys) {
+        const option = options[key];
+        const [optionType, min, max, step] = splitString([':', '..', '@'], option);
 
+        const component = getOrCreateComponent(optionType, min, max, step);
+
+        container.append(component);
+    }
 };
 
-const componentPool = {
-
-};
-
-function getOrCreateComponent(optionType) {
+function getOrCreateComponent(optionType, min, max, step) {
     let component;
 
     // Try to recycle prior component
-    const comps = componentPool[optionType] || [];
+    let comps = componentPool[optionType] || [];
 
     if (comps.length > 0) {
         component = comps[0];
@@ -48,8 +60,10 @@ function getOrCreateComponent(optionType) {
 
     // Create new component
     if (optionType == OPTIONTYPE.SLIDER) {
-
+        comp = makeSlider(min, max, step);
     }
+
+    return comp;
 }
 
 function recycleToPool(child) {
@@ -77,6 +91,7 @@ function clearContainer() {
     clearElement(container);
 }
 
-function makeSlider() {
+function makeSlider(min, max, step) {
+    const slider = document.createElement('c-slider');
 
 }

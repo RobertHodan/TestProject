@@ -151,3 +151,54 @@ export function isLetter(str) {
 export function isNotLetter(str) {
   return !isLetter(str);
 }
+
+/** 
+ *  
+ * @param {Array} delimiters  
+ * @param {String} target  
+ * @returns  
+ */
+export function splitString(delimiters, target) {
+  if (!target) {
+    return [];
+  }
+
+  if (isString(delimiters)) {
+    delimiters = [delimiters];
+  }
+
+  if (!delimiters || !delimiters.length) {
+    return [];
+  }
+
+  const splitResult = [];
+  let strChunk = "";
+  for (let i = 0; i < target.length; i++) {
+    let foundDelimiter = false;
+    for (let d of delimiters) {
+      if (d.length <= 0) {
+        continue;
+      }
+
+      if (target.startsWith(d, i)) {
+        if (strChunk.length) {
+          splitResult.push(strChunk);
+          strChunk = "";
+        }
+        i += d.length - 1;
+        foundDelimiter = true;
+        break;
+      }
+    }
+
+    if (!foundDelimiter) {
+      strChunk += target[i];
+    }
+  }
+
+  if (strChunk.length) {
+    splitResult.push(strChunk);
+  }
+
+  return splitResult;
+} 
