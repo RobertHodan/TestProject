@@ -20,24 +20,16 @@ const defaults = {
  * @returns {SearchableItemBank}
  */
 export function getSearchableItemBank() {
-  let ItemBank = window.SearchableItemBank;
-  if (ItemBank) {
-    return ItemBank;
+  if (window.SearchableItemBank) {
+    return window.SearchableItemBank;
   }
 
-  ItemBank = new SearchableItemBank();
-  window.SearchableItemBank = ItemBank;
-
-  return ItemBank;
-}
-
-function searchable(component, settings) {
-  component.searchable = settings;
+  return window.SearchableItemBank = new SearchableItemBank();
 }
 
 export class SearchableItemBank {
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     /**
      * 'default': {
@@ -45,11 +37,6 @@ export class SearchableItemBank {
      * }
      */
     this.contextMap = {};
-
-    /**
-     * 'category-id': SearchableItem[]
-     */
-    this.categoryMap = {};
   }
 
   /**
@@ -58,22 +45,47 @@ export class SearchableItemBank {
    * @param {*} settings
    */
   addItem(item, settings) {
-    const id = settings.id;
+    if (!settings && item.searchable) {
+      settings = item.searchable;
+    }
+    const id = settings.key;
     const hasValidId = id && id.length && id.length > 0;
     if (!hasValidId) {
       return;
     }
 
-    searchable(item, settings);
-    const contextId = settings.contextId || 'default';
+    const contextId = settings.context || 'default';
 
     this.setItem(item, contextId);
 
     return item;
   }
 
-  getItems(contextId = 'default') {
+  getItemsByContext(contextId = 'default') {
     return this.contextMap[contextId];
+  }
+
+  getItemsByTag(contextId, tag) {
+    const map = this.contextMap[contextId];
+    if (!map) {
+      return [];
+    }
+
+    let matchingItems = [];
+    let itemKeys = Object.keys(map);
+    for (const key of itemKeys) {
+      const item = map[key];
+
+      if (!item.isSearchable) {
+        continue;
+      }
+
+      if (item.searchable.tags.includes(tag)) {
+        matchingItems.push(item);
+      }
+    }
+
+    return matchingItems;
   }
 
   getItem(id, contextId = 'default') {
@@ -85,33 +97,6 @@ export class SearchableItemBank {
     return itemMap[id];
   }
 
-  /**
-   *
-   * @param {SearchableItemSettings} settings
-   */
-  // getOrCreateItem(settings) {
-  //   const id = settings.id;
-  //   const hasValidId = id && id.length && id.length > 0;
-  //   if (!hasValidId) {
-  //     return;
-  //   }
-
-  //   const item = new Component(settings);
-  //   const contextId = settings.contextId || 'default';
-
-  //   this.setItem(item, contextId);
-
-  //   return item;
-  // }
-
-  findItemsByCategory(category) {
-    if (!this.categoryMap[category]) {
-      return [];
-    }
-
-    return this.categoryMap[category];
-  }
-
   setItem(item, contextId) {
     const search = item.searchable;
     let itemMap = this.contextMap[contextId];
@@ -120,21 +105,6 @@ export class SearchableItemBank {
       this.contextMap[contextId] = itemMap;
     }
 
-    itemMap[search.id] = item;
-
-    // Category
-    if (search.searchableCategory) {
-      this._setItemCategory(item);
-    }
-  }
-
-  _setItemCategory(item) {
-    const search = item.searchable;
-    if (!this.categoryMap[search.searchableCategory]) {
-      this.categoryMap[search.searchableCategory] = [];
-    }
-
-    const items = this.categoryMap[search.searchableCategory];
-    items.push(item);
+    itemMap[search.key] = item;
   }
 }

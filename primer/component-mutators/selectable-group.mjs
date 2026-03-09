@@ -1,6 +1,7 @@
-import { addEventListener, isInteger, noop } from '../utils/utils.mjs';
-import { addMutator, applyRequisites } from './utils.mjs';
+import { addEventListener, isFunction, isInteger, noop } from '../utils/utils.mjs';
+import { addMutator } from './utils.mjs';
 import { isSelectable } from './selectable.mjs';
+import { getDirectChild } from '../utils/element.mjs';
 
 /**
  * @typedef {Object} SelectableGroup
@@ -13,139 +14,144 @@ import { isSelectable } from './selectable.mjs';
  */
 
 const requisites = {
-  selectChild: function (child, skipCallback) {
-    if (!this.canSelect()) {
-      return false;
-    }
+    selectChild: function(child, skipCallback) {
+        if (!this.canSelect()) {
+            return false;
+        }
 
-    if (isInteger(child)) {
-      child = this.getChild(child, this.selectableGroup.wrapAround);
-    }
+        if (!child) {
+            child = this.getHoveredChild() || 0;
+        }
 
-    if (!skipCallback) {
-      this.onSelect(child);
-    }
+        if (isInteger(child)) {
+            child = this.getChild(child, this.selectableGroup.wrapAround);
+        }
 
-    this._deselectPreviousChild();
+        if (!skipCallback) {
+            this.onSelect(child);
 
-    if (!child) {
-      return false;
-    }
+            if (child && isFunction(child.onSelect)) {
+                child.onSelect();
+            }
+        }
 
-    if (isSelectable(child)) {
-      child.select();
-    } else {
-      child.classList.add('selected');
-    }
+        this._deselectPreviousChild();
 
-    this._deselectPreviousChild = () => {
-      if (isSelectable(child)) {
-        child.deselect();
-      } else {
-        child.classList.remove('selected');
-      }
 
-      this._deselectPreviousChild = noop;
-    }
+        if (isSelectable(child)) {
+            child.select();
+        } else {
+            child.classList.add('selected');
+        }
 
-    return true;
-  },
-  getSelectedChild: function () {
-    let items = this.getChildren();
-    let child;
-    for (const item of items) {
-      if (item.classList.contains('selected')) {
-        child = item;
-        break;
-      }
-    }
+        this._deselectPreviousChild = () => {
+            if (isSelectable(child)) {
+                child.deselect();
+            } else {
+                child.classList.remove('selected');
+            }
 
-    if (!child) {
-      child = items[0];
-    }
+            this._deselectPreviousChild = noop;
+        }
 
-    return child;
-  },
-  selectNextChild: function () {
-    const selectedChild = this.getSelectedChild();
-    const index = this.getChildIndex(selectedChild);
-    const nextChild = this.getChild(index + 1, this.selectableGroup.wrapAround);
-    this.selectChild(nextChild);
-  },
-  selectPrevChild: function () {
-    const selectedChild = this.getSelectedChild();
-    const index = this.getChildIndex(selectedChild);
-    const nextChild = this.getChild(index - 1, this.selectableGroup.wrapAround);
-    this.selectChild(nextChild);
-  },
-  hoverChild: function (child) {
-    if (!this.canSelect()) {
-      return false;
-    }
+        return true;
+    },
+    getSelectedChild: function() {
+        let items = this.getChildren();
+        let child;
+        for (const item of items) {
+            if (item.classList.contains('selected')) {
+                child = item;
+                break;
+            }
+        }
 
-    this._unhoverPreviousChild();
+        if (!child) {
+            child = items[0];
+        }
 
-    if (!child) {
-      return false;
-    }
+        return child;
+    },
+    selectNextChild: function() {
+        const selectedChild = this.getSelectedChild();
+        const index = this.getChildIndex(selectedChild);
+        const nextChild = this.getChild(index + 1, this.selectableGroup.wrapAround);
+        this.selectChild(nextChild);
+    },
+    selectPrevChild: function() {
+        const selectedChild = this.getSelectedChild();
+        const index = this.getChildIndex(selectedChild);
+        const nextChild = this.getChild(index - 1, this.selectableGroup.wrapAround);
+        this.selectChild(nextChild);
+    },
+    hoverChild: function(child) {
+        if (!this.canSelect()) {
+            return false;
+        }
 
-    child.classList.add('hover');
+        this._unhoverPreviousChild();
 
-    this._unhoverPreviousChild = () => {
-      child.classList.remove('hover');
-    }
+        if (!child) {
+            return false;
+        }
 
-    return true;
-  },
-  hoverNextChild: function () {
-    const index = this.getHoveredIndex();
-    const hoverChild = this.getChild(index + 1, this.selectableGroup.wrapAround);
-    this.hoverChild(hoverChild);
-  },
-  hoverPrevChild: function () {
-    const index = this.getHoveredIndex();
-    const hoverChild = this.getChild(index - 1, this.selectableGroup.wrapAround);
-    this.hoverChild(hoverChild);
-  },
-  getHoveredChild: function () {
-    let items = this.getChildren();
-    let hoveredItem;
-    for (const item of items) {
-      if (item.classList.contains('hover')) {
-        hoveredItem = item;
-        break;
-      }
-    }
+        child.classList.add('hover');
 
-    return hoveredItem;
-  },
-  getHoveredIndex: function () {
-    const hoveredChild = this.getHoveredChild();
-    let index = this.getChildIndex(hoveredChild);
-    if (index < 0) {
-      index = this.getSelectedIndex();
-    }
+        this._unhoverPreviousChild = () => {
+            child.classList.remove('hover');
+        }
 
-    if (index < 0) {
-      index = 0;
-    }
+        return true;
+    },
+    hoverNextChild: function() {
+        const index = this.getHoveredIndex();
+        const hoverChild = this.getChild(index + 1, this.selectableGroup.wrapAround);
+        this.hoverChild(hoverChild);
+    },
+    hoverPrevChild: function() {
+        const index = this.getHoveredIndex();
+        const hoverChild = this.getChild(index - 1, this.selectableGroup.wrapAround);
+        this.hoverChild(hoverChild);
+    },
+    getHoveredChild: function() {
+        let items = this.getChildren();
+        let hoveredItem;
+        for (const item of items) {
+            if (item.classList.contains('hover')) {
+                hoveredItem = item;
+                break;
+            }
+        }
 
-    return index;
-  },
-  getSelectedIndex: function () {
-    const selectedChild = this.getSelectedChild();
-    return this.getChildIndex(selectedChild);
-  },
-  onSelect: noop,
-  _deselectPreviousChild: noop,
-  _unhoverPreviousChild: noop,
-  canSelect: function () { return true },
+        return hoveredItem;
+    },
+    getHoveredIndex: function() {
+        const hoveredChild = this.getHoveredChild();
+        let index = this.getChildIndex(hoveredChild);
+        if (index < 0) {
+            index = this.getSelectedIndex();
+        }
+
+        if (index < 0) {
+            index = 0;
+        }
+
+        return index;
+    },
+    getSelectedIndex: function() {
+        const selectedChild = this.getSelectedChild();
+        return this.getChildIndex(selectedChild);
+    },
+    onSelect: noop,
+    _deselectPreviousChild: noop,
+    _unhoverPreviousChild: noop,
+    canSelect: function() { return this.children.length > 0 },
 }
 
 const internals = {
-  id: 'selectableGroup',
-  wrapAround: false,
-  onHoverClassName: false,
+    id: 'selectableGroup',
+    wrapAround: false,
+    onHoverClassName: false,
 }
 
 /**
@@ -154,31 +160,39 @@ const internals = {
  * @param {SelectableGroup} settings
  */
 export function selectableGroup(component, settings) {
-  if (component.isSelectableGroup) {
-    return;
-  }
+    if (component.isSelectableGroup) {
+        return;
+    }
 
-  component.isSelectableGroup = true;
+    component.isSelectableGroup = true;
 
-  addMutator(component, internals, requisites, settings);
+    addMutator(component, internals, requisites, settings);
 
-  if (component.selectableGroup.onHoverClassName) {
-    const el = component.getElement();
-    const removers = [];
-    el.addEventListener('mouseenter', () => {
-      const items = component.getItems();
-      for (const item of items) {
-        const remover = addEventListener(item, 'mouseenter', () => {
-          this.hoverChild(item);
+    if (component.selectableGroup.onHoverClassName) {
+        const el = component;
+        const removers = [];
+        el.addEventListener('mouseenter', () => {
+            const items = component.children;
+            for (const item of items) {
+                const remover = addEventListener(item, 'mouseenter', () => {
+                    component.hoverChild(item);
+                });
+                removers.push(remover);
+            }
         });
-        removers.push(remover);
-      }
-    });
 
-    el.addEventListener('mouseleave', () => {
-      for (const remover of removers) {
-        remover();
-      }
+        el.addEventListener('mouseleave', () => {
+            for (const remover of removers) {
+                remover();
+            }
+        });
+    }
+
+    component.addEventListener('click', (event) => {
+        const item = getDirectChild(component, event.target);
+        if (!item) {
+            return;
+        }
+        component.selectChild(item);
     });
-  }
 }

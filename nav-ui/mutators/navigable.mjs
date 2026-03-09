@@ -1,7 +1,12 @@
 import { addMutator, applyRequisites } from "../../primer/component-mutators/utils.mjs";
+import { hasFocus } from "../../primer/utils/element.mjs";
 
 const requisites = {
-  canNavigate: function () {
+  canNavigate: function() {
+    if (this.navigable.requireFocus) {
+      return hasFocus(this);
+    }
+
     return true;
   },
 }
@@ -12,6 +17,7 @@ const internals = {
   context: undefined,
   bindings: undefined,
   contextBindings: undefined,
+  requireFocus: true,
 }
 
 /**
@@ -48,7 +54,7 @@ function connectBindings(component, paramBindings, isContext) {
   for (const key of keys) {
     const func = findFunction(component, key);
     if (typeof (func) === 'function') {
-      const performAction = function (strength) {
+      const performAction = function(strength) {
         if (component.canNavigate()) {
           func.call(component, strength);
         }
@@ -66,12 +72,6 @@ function connectBindings(component, paramBindings, isContext) {
 }
 
 function findFunction(component, functionName) {
-  // let func = component.actions && component.actions[functionName];
-
-  // if (!func) {
-  //   func = component[functionName];
-  // }
-
   let func = component[functionName];
 
   return func;

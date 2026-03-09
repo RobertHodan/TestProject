@@ -5,7 +5,7 @@ import { isString } from "../primer/utils/utils.mjs";
    * @description Returns a language label. NavUI & LanguageManager are required.
    * @param {string} langKey
    */
- export function createLanguageLabel(langKey) {
+export function createLanguageLabel(langKey) {
   let isLangKey = false;
   if (isLanguageLabelCompatible(langKey)) {
     langKey = langKey.split('@lang:')[1];
@@ -13,10 +13,9 @@ import { isString } from "../primer/utils/utils.mjs";
   }
 
   const className = 'nui-lang-lab';
-  const label = new Component({
-    className: isLangKey ? className : '',
-    content: langKey,
-  });
+  const label = document.createElement('c-component');
+  label.className = isLangKey ? className : '';
+  label.content = langKey;
   label.key = langKey;
   label.isLangKey = isLangKey;
 

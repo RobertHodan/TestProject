@@ -1,6 +1,8 @@
+import { noop } from '../utils/utils.mjs';
 import { addMutator, isNotComponent } from './utils.mjs';
 
 const requisites = {
+  onSlotComplete: noop,
 }
 
 const internals = {
@@ -14,13 +16,13 @@ const GlobalSlotData = {
   _dragEl: undefined,
   _prevElPoint: undefined,
   _activeSlotable: undefined,
-  setSlotClone: function (element) {
+  setSlotClone: function(element) {
     this.slotClone = element;
   },
-  setElement: function (element) {
+  setElement: function(element) {
     this.element = element;
   },
-  onDragElement: function (bounds) {
+  onDragElement: function(bounds) {
     if (!this.slotClone) {
       this._dragEl = undefined;
       this._activeSlotable = undefined;
@@ -75,17 +77,18 @@ const GlobalSlotData = {
     } else {
       this._activeSlotable.insertBefore(this.slotClone, this._dragEl)
     }
+
   },
-  isColumnLayout: function (element) {
+  isColumnLayout: function(element) {
     // Assumes flexbox is used for every single slotable component.
     return window.getComputedStyle(element).flexDirection == 'column';
   },
-  onDragCancel: function () {
+  onDragCancel: function() {
     this._prevElPoint = undefined;
     this._activeSlotable = undefined;
     this._dragEl = undefined;
   },
-  getSlotableAncestor: function (child) {
+  getSlotableAncestor: function(child) {
     if (!child) {
       return [undefined, undefined];
     }

@@ -29,10 +29,11 @@ export class CursorManager extends Component {
    * @param {ComponentParams} settings
    */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
     super(settings);
 
-    this.cursor = new Component({className: 'cursor'});
+    this.cursor = document.createElement('c-component');
+    this.cursor.className = 'cursor';
     document.body.append(this.cursor.el);
 
     document.addEventListener('mousemove', (e) => {

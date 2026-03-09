@@ -4,20 +4,20 @@
  * @property {number | string | HTMLElement} selectedItem
  */
 
- import { clearElement, noop, wrapAround } from '../utils/utils.mjs';
- import { Component } from './component.mjs';
- import { selectableGroup } from '../component-mutators/selectable-group.mjs';
+import { clearElement, noop, wrapAround } from '../utils/utils.mjs';
+import { Component } from './component.mjs';
+import { selectableGroup } from '../component-mutators/selectable-group.mjs';
 import { selectable } from '../component-mutators/selectable.mjs';
 import { actionable } from '../component-mutators/actionable.mjs';
 
- const defaults = {
-   items: [],
-   selectedIndex: 0,
-   hideDropdownOnClickOut: true,
-   onShow: noop,
-   onHide: noop,
-   onSelect: noop,
- }
+const defaults = {
+  items: [],
+  selectedIndex: 0,
+  hideDropdownOnClickOut: true,
+  onShow: noop,
+  onHide: noop,
+  onSelect: noop,
+}
 
 export class Dropdown extends Component {
   /**
@@ -25,7 +25,7 @@ export class Dropdown extends Component {
   * @param {DropdownParams} settings
   */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     super(settings);
     this.el.classList.add('dropdown');
@@ -41,17 +41,17 @@ export class Dropdown extends Component {
     this.index = settings.selectedIndex;
     this._restoreItemContent = noop;
 
-    this.selectedContainer = new Component({
-      className: 'selected-item',
-    });
+    this.selectedContainer = document.createElement('c-component');
+    this.selectedContainer.className = 'selected-item';
+
     actionable(this.selectedContainer, {
       action: () => this.action()
     })
     this.el.append(this.selectedContainer.el);
 
-    this.list = new Component({
-      className: 'dropdown-list',
-    });
+    this.list = document.createElement('c-component');
+    this.list.className = 'dropdown-list';
+
     actionable(this.list, {
       action: () => {
         this.select(this.list.index);
@@ -102,7 +102,7 @@ export class Dropdown extends Component {
   }
 
   append(item) {
-    const itemContainer = new Component();
+    const itemContainer = document.createElement('c-component');
     selectable(itemContainer);
     actionable(itemContainer, {
       action: () => {

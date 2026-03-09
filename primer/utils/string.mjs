@@ -6,7 +6,7 @@ export function stringToTemplate(htmlStr) {
 }
 
 export function stringToElement(htmlStr) {
-  return stringToTemplate(htmlStr).content.firstElementChild;
+  return stringToTemplate(htmlStr).content;
 }
 
 /**
@@ -25,8 +25,8 @@ export function prettifyCodeString(string, colorMap, recusiveData) {
   let type = '';
   let char = '';
   let startIndex = recusiveData && recusiveData.startIndex || 0;
-  let endIndex = string.length-1;
-  for (let i=startIndex; i<string.length; i+=1) {
+  let endIndex = string.length - 1;
+  for (let i = startIndex; i < string.length; i += 1) {
     char = string[i];
     if (char == ' ' && prevWord == ' ') {
       continue;
@@ -42,9 +42,9 @@ export function prettifyCodeString(string, colorMap, recusiveData) {
 
     // Skip ahead to determine prevWord type
     if (char == ':') {
-      const {value, endIndex, type} = prettifyCodeString(string, colorMap, {
-        startIndex: i+1,
-        ... recusiveData,
+      const { value, endIndex, type } = prettifyCodeString(string, colorMap, {
+        startIndex: i + 1,
+        ...recusiveData,
       });
 
       result += _colorPrevWord(prevWord, colorMap[type]);
@@ -98,7 +98,7 @@ export function prettifyLabel(str) {
   // Uppercase the first letter of every word
   for (let i = 0; i < str.length; i++) {
     const char = str[i];
-    if (i === 0 || str[i-1] === ' ') {
+    if (i === 0 || str[i - 1] === ' ') {
       newStr += char.toUpperCase();
       continue;
     }
@@ -114,7 +114,7 @@ export function isFirstLetter(index, str) {
     return true;
   }
 
-  const prevChar = str[index-1];
+  const prevChar = str[index - 1];
   if (prevChar === '-' || prevChar === ' ' || prevChar === '_') {
     return true;
   }
@@ -135,4 +135,19 @@ export function toPascalCase(str) {
   }
 
   return pascal;
+}
+
+export function isLetter(str) {
+  if (!str || str.length > 1) {
+    return false;
+  }
+
+  // https://stackoverflow.com/a/62032796
+  const isLetter = RegExp(/^\p{L}/, 'u').test(str);
+
+  return isLetter;
+}
+
+export function isNotLetter(str) {
+  return !isLetter(str);
 }

@@ -13,7 +13,7 @@
  * @property {string} key
  */
 
-import { Component } from "../primer/components/component.mjs";
+import "../primer/components/component.mjs";
 import { NAVACTIONS } from "./nav-actions.mjs";
 
 /**
@@ -22,13 +22,12 @@ import { NAVACTIONS } from "./nav-actions.mjs";
  * @returns {DynamicIcon}
  */
 export function createDynamicIcon(navAction) {
-  if (!navAction || !Object.keys(NAVACTIONS).includes(navAction.toUpperCase())) {
-   console.warn('No such navAction exists');
-  }
+   if (!navAction || !Object.keys(NAVACTIONS).includes(navAction.toUpperCase())) {
+      console.warn('No such navAction exists');
+   }
 
-  const dyn = new Component({
-    className: 'nui-dyn-icon',
-   });
+   const dyn = document.createElement('c-component');
+   dyn.className = 'nui-dyn-icon';
    dyn.key = navAction;
 
    return dyn;

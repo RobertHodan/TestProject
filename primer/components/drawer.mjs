@@ -26,7 +26,7 @@ export class Drawer extends Component {
   * @param {DrawerParams} settings
   */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     super(settings);
     this.el.classList.add('drawer');
@@ -35,18 +35,19 @@ export class Drawer extends Component {
     this.onShow = settings.onShow;
     this.isContentPrepended = settings.shouldPrependContent;
 
-    this.labelContainer = new Button({
-      className: 'drawer-label',
-      keyboardFocusable: false,
-      action: () => this.action()
-    });
-    this.labelSwapper = new Component({ className: 'swapper'});
+    this.labelContainer = document.createElement('c-button');
+    this.labelContainer.className = 'drawer-label';
+    this.labelContainer.keyboardFocusable = false;
+    this.labelContainer.action = this.action.bind(this);
+
+    this.labelSwapper = document.createElement('c-component');
+    this.labelSwapper.className = 'swapper';
+
     this.labelContainer.append(this.labelSwapper);
     this.el.append(this.labelContainer.el);
 
-    this.drawerContent = new Component({
-      className: 'drawer-content',
-    });
+    this.drawerContent = document.createElement('c-component');
+    this.drawerContent.className = 'drawer-content';
 
     if (settings.label) {
       this.labelContainer.append(settings.label);

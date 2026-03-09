@@ -1,3 +1,4 @@
+import { noop } from '../primer/utils/utils.mjs';
 import { NavRemote } from './nav-remote.mjs';
 import { ObserverSingleton } from './observer-singleton.mjs';
 
@@ -72,7 +73,7 @@ export class NavUI {
     const removers = [];
 
     if (this.connectedChildren.includes(component)) {
-      // return noop;
+      return noop;
     }
 
     const nav = component.navigable;
@@ -81,8 +82,8 @@ export class NavUI {
       const actionMap = this.getActionMap('default');
       const actionKeys = Object.keys(nav.bindings);
       for (const actionKey of actionKeys) {
-        removers.push(this._onAction(actionMap, actionKey, () => {
-          nav.bindings[actionKey]();
+        removers.push(this._onAction(actionMap, actionKey, (strength) => {
+          nav.bindings[actionKey](strength);
         }));
       }
     } else if (nav.context && nav.contextBindings) {

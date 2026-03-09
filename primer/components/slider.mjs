@@ -30,10 +30,10 @@ export class Slider extends Component {
    * @param {SliderParams} settings
    */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     settings.tagName = 'div',
-    super(settings);
+      super(settings);
     this.el.classList.add('slider');
 
     valuable(this, {
@@ -141,7 +141,7 @@ export class Slider extends Component {
   }
 
   _getLength() {
-    let length = this.bar.clientWidth; 
+    let length = this.bar.clientWidth;
     if (this._isVertical()) {
       length = this.bar.clientHeight;
     }
@@ -167,7 +167,7 @@ export class Slider extends Component {
     const length = this._getLength();
     const width = this._getWidth();
     let pos = this.value / (this.max - this.min);
-    
+
     let thumbPos = length * pos;
     let leftPos = this.bar.clientLeft;
 
@@ -218,3 +218,4 @@ export class Slider extends Component {
     this.thumb.style.setProperty('box-shadow', `inset 0 0 0 100vw ${color}`);
   }
 }
+customElements.define('c-slider', Slider);

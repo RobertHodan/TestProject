@@ -290,16 +290,10 @@ export class VirtualKeyboard extends Component {
     if (duplicate) {
       btn = duplicate;
     } else {
-      btn = new Button({
-        content,
-        enableDefaultEvents: false,
-        className: 'btn',
-        action: () => {
-          this.action(btn);
-        },
-      });
-
+      btn = document.createElement('c-button');
       btn.content = content;
+      btn.className = 'btn';
+      btn.action = this.action.bind(this, btn);
       btn.x = x;
       btn.y = y;
       btn.actionType = item.actionType;

@@ -1,0 +1,103 @@
+c-chapter-sidebar {
+  background: #292929;
+  border-right: 1px solid var(--border-dark);
+  height: 100%;
+  min-width: 10em;
+  display: flex;
+  font-size: var(--chapter-list-size);
+  flex-direction: column;
+  z-index: 0;
+}
+
+.chapter-list-item.editing .item-input {
+    display: inherit !important;
+}
+
+.chapter-list-item.editing .title {
+    display: none;
+}
+
+.chapter-list-item.editing .edit-btn {
+    display: none !important;
+}
+
+.chapter-list-item .item-input {
+  height: 100%;
+  background: none;
+  border: none;
+  color: var(--text-color-dark);
+  field-sizing: content;
+  min-width: 0;
+  box-sizing: border-box;
+  flex-grow: 1;
+  text-overflow: ellipsis;
+}
+
+.chapter-list-item.new-btn {
+    font-size: 1.5em;
+    font-weight: 600;
+    justify-content: center;
+    padding: 0.1em 0;
+}
+
+.chapter-list-item {
+  min-height: 1em;
+  display: flex;
+  height: fit-content;
+  align-items: center;
+  color: var(--text-color-main);
+  font-size: 0.8em;
+  width: 100%;
+  z-index: 0;
+}
+
+.chapter-list-item .title {
+    width: fit-content;
+    height: 1em;
+    overflow: clip;
+}
+
+.chapter-list-item input {
+  cursor: pointer;
+}
+
+.chapter-list-item input:disabled {
+  pointer-events: none;
+  display: none;
+}
+
+.chapter-list-item.selected {
+  background: var(--background-primary);
+  border-left: 0.15em solid var(--border-medium);
+}
+
+.chapter-list-item .edit-btn {
+  display: none;
+  pointer-events: none;
+  background: none;
+  border: none;
+  color: var(--text-color-main);
+  cursor: pointer;
+  padding: 0 0.3em;
+  height: 100%;
+  align-content: center;
+}
+
+.chapter-list-item:hover .edit-btn {
+    display: block;
+    pointer-events: inherit;
+    cursor: pointer;
+    background: inherit;
+}
+
+.drag-handle {
+  width: 0.8em;
+  padding: 1em 0;
+  flex-shrink: 0;
+  cursor: grab;
+  user-select: none;
+}
+
+.chapter-list-item.selected .drag-handle {
+  padding: 1.3em 0;
+}

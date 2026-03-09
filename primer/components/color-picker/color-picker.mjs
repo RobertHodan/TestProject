@@ -16,26 +16,24 @@ const defaults = {
 
 export class ColorPicker extends Component {
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
     super(settings);
 
     const horiz = document.createElement('div');
     horiz.classList.add('horiz');
 
     this.color = new ColorHWB('hwb(0deg 0% 0%)');
-    this.colorSelectionBox = new ColorSelectionBox({
-      color: this.color,
-    });
+    this.colorSelectionBox = document.createElement('c-color-selection-box');
+    this.colorSelectionBox.color = this.color;
     this.append(this.colorSelectionBox.getElement());
 
 
     //
     // Hue Slider
     //
-    this.hueSlider = new HueSlider({
-      className: 'hue-slider',
-      color: this.color,
-    });
+    this.hueSlider = document.createElement('c-hue-slider');
+    this.hueSlider.className = 'hue-slider';
+    this.hueSlider.color = this.color;
     this.append(this.hueSlider);
 
     const hueButtons = document.createElement('div');
@@ -52,31 +50,30 @@ export class ColorPicker extends Component {
       },
     });
 
-    const hueBtnPrev = new NavButton({
-      className: ['nav-btn', 'prev'],
-      navAction: NAVACTIONS.PREVCAT,
-      keyboardFocusable: false,
-      action: () => this.hueSlider.stepDown(),
-    });
+
+    const hueBtnPrev = document.createElement('c-nav-button');
+    hueBtnPrev.className = 'nav-btn prev';
+    hueBtnPrev.navAction = NAVACTIONS.PREVCAT;
+    hueBtnPrev.keyboardFocusable = false;
+    hueBtnPrev.action = () => this.hueSlider.stepDown();
     hueButtons.append(hueBtnPrev);
 
-    const hueBtnNext = new NavButton({
-      className: ['nav-btn', 'next'],
-      navAction: NAVACTIONS.NEXTCAT,
-      keyboardFocusable: false,
-      action: () => this.hueSlider.stepUp(),
-    });
+    const hueBtnNext = document.createElement('c-nav-button');
+    hueBtnNext.className = 'nav-btn next';
+    hueBtnNext.navAction = NAVACTIONS.NEXTCAT;
+    hueBtnNext.keyboardFocusable = false;
+    hueBtnNext.action = () => this.hueSlider.stepUp();
     hueButtons.append(hueBtnNext);
 
 
     //
     // Opacity Slider
     //
-    this.opacitySlider = new OpacitySlider({
-      className: 'opacity-slider',
-      color: this.color,
-    });
+    this.opacitySlider = document.createElement('c-opacity-slider');
+    this.opacitySlider.className = 'opacity-slider';
+    this.opacitySlider.color = this.color;
     this.append(this.opacitySlider.getElement());
+
     const opacityButtons = document.createElement('div');
     opacityButtons.classList.add('horiz-center');
     this.opacitySlider.append(opacityButtons);
@@ -91,42 +88,40 @@ export class ColorPicker extends Component {
       },
     });
 
-    const opacityBtnPrev = new NavButton({
-      className: ['nav-btn', 'prev'],
-      navAction: NAVACTIONS.PREVTAB,
-      keyboardFocusable: false,
-      action: () => this.opacitySlider.stepDown(),
-    });
+    const opacityBtnPrev = document.createElement('c-nav-button');
+    hueBtnPrev.className = 'nav-btn prev';
+    hueBtnPrev.navAction = NAVACTIONS.PREVCAT;
+    hueBtnPrev.keyboardFocusable = false;
+    hueBtnPrev.action = () => this.opacitySlider.stepDown();
     opacityButtons.append(opacityBtnPrev);
 
-    const opacityBtnNext = new NavButton({
-      className: ['nav-btn', 'next'],
-      navAction: NAVACTIONS.NEXTTAB,
-      keyboardFocusable: false,
-      action: () => this.opacitySlider.stepUp(),
-    });
+    const opacityBtnNext = document.createElement('c-nav-button');
+    hueBtnNext.className = 'nav-btn next';
+    hueBtnNext.navAction = NAVACTIONS.NEXTCAT;
+    hueBtnNext.keyboardFocusable = false;
+    hueBtnNext.action = () => this.hueSlider.stepUp();
     opacityButtons.append(opacityBtnNext);
 
     //
     // Action Bar
     //
-    const actionBar = new ActionBar({
-      keyboardFocusable: false,
-      createItemElement: (btnSettings) => this.createActionBarItem(btnSettings), 
-      btnClassName: 'nav-btn',
-      items: [
-        {
-          label: '@lang:options.accept',
-          navAction: NAVACTIONS.ENTER,
-        },
-        {
-          alignRight: true,
-          label: '@lang:options.cancel',
-          navAction: NAVACTIONS.BACK,
-          className: 'margin-left-auto'
-        }
-      ],
-    });
+
+    const actionBar = document.createElement('c-action-bar');
+    actionBar.keyboardFocusable = false;
+    actionBar.createItemElement = (btnSettings) => this.createActionBarItem(btnSettings);
+    actionBar.className = 'nav-btn';
+    actionBar.items = [
+      {
+        label: '@lang:options.accept',
+        navAction: NAVACTIONS.ENTER,
+      },
+      {
+        alignRight: true,
+        label: '@lang:options.cancel',
+        navAction: NAVACTIONS.BACK,
+        className: 'margin-left-auto'
+      }
+    ];
     this.append(actionBar);
   }
 
@@ -137,15 +132,16 @@ export class ColorPicker extends Component {
     }
 
     let button;
+    // TODO: Pass btnSettings into button
     if (length == 4) {
-      button = new Button(btnSettings);
+      button = document.createElement('c-button');
       const container = document.createElement('div');
       container.classList.add('directional-btns');
 
       this.createAndAppendDirectionalIcons(container, btnSettings.navAction);
       button.append(container);
     } else {
-      button = new NavButton(btnSettings);
+      button = document.createElement('c-nav-button');
       button.setIconSettings({
         className: 'btn',
       });
@@ -172,3 +168,4 @@ export class ColorPicker extends Component {
     container.append(bottom);
   }
 }
+customElements.define('c-color-picker', ColorPicker);

@@ -43,6 +43,7 @@ export class ModalManager extends Component {
 
     this.modals = {};
     this.modalOptions = {};
+    this.pendingClose = noop;
 
     this.modalCloseCb = noop;
     this.activeId = '';
@@ -87,6 +88,12 @@ export class ModalManager extends Component {
     });
 
     this._hide();
+
+    if (isString(this.pendingShow)) {
+      this.showModal(this.pendingShow, this.pendingOnClose);
+      this.pendingShow = undefined;
+      this.pendingOnClose = noop;
+    }
   }
 
   setClassName(className, overrideDefault) {
@@ -149,6 +156,12 @@ export class ModalManager extends Component {
 
   showModal(id, onClose) {
     if (this.activeId === id) {
+      return;
+    }
+
+    if (!this.content) {
+      this.pendingShow = id;
+      this.pendingOnClose = onClose;
       return;
     }
 

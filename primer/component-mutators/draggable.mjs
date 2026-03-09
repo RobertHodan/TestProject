@@ -3,7 +3,7 @@ import { addMouseListener } from '../utils/utils.mjs';
 import { getGlobalSlotData } from './slotable.mjs';
 
 const requisites = {
-  dragBegin: function () {
+  dragBegin: function() {
     const element = this;
     const parent = element.parentElement;
 
@@ -24,6 +24,7 @@ const requisites = {
     // Replace real element with an invisible clone
     // A deep clone is done to preserve the dimension resulting from children
     const standin = element.cloneNode(true);
+    standin.classList.remove('nui-navigable');
     standin.style.setProperty('visibility', 'hidden');
     element.replaceWith(standin);
     globalSlotData.setSlotClone(standin);
@@ -49,7 +50,7 @@ const requisites = {
       movementY: 0,
     });
   },
-  dragUpdate: function (event) {
+  dragUpdate: function(event) {
     const hoverPreview = this.dragcomp._hoverPreview;
 
     if (!hoverPreview) {
@@ -64,7 +65,7 @@ const requisites = {
     const globalSlotData = getGlobalSlotData();
     globalSlotData.onDragElement(bounds);
   },
-  dragStop: function () {
+  dragStop: function() {
     const globalSlotData = getGlobalSlotData();
     globalSlotData.isDragging = false;
     const hoverPreview = this.dragcomp._hoverPreview;
@@ -81,6 +82,11 @@ const requisites = {
 
     if (slotClone) {
       slotClone.replaceWith(element);
+
+      if (element.parentElement && element.parentElement.isSlotable) {
+        element.parentElement.onSlotComplete();
+      }
+
       globalSlotData.setSlotClone(undefined);
       globalSlotData.setElement(undefined);
       globalSlotData.onDragCancel();

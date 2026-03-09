@@ -1,7 +1,7 @@
 // Singleton
 // https://stackoverflow.com/a/59646297
 
-import { isArray, isIterable, isNotValid, isString, isValid } from "../primer/utils/utils.mjs";
+import { isArray, isFunction, isIterable, isNotValid, isString, isValid } from "../primer/utils/utils.mjs";
 
 export class ObserverSingleton {
   constructor() {
@@ -109,7 +109,9 @@ export class ObserverSingleton {
       for (const child of removedChildren) {
         const index = parentComponents.indexOf(child);
         parentComponents.splice(index, 1);
-        child.disconnectFromObservable();
+        if (isFunction(child.disconnectFromObservable)) {
+          child.disconnectFromObservable();
+        }
       }
 
       for (const child of addedChildren) {
@@ -132,7 +134,7 @@ export class ObserverSingleton {
   }
 
   _connectChildClass(component) {
-    if (!component) {
+    if (!component || component.isClone) {
       return;
     }
     const disconnectors = [];
@@ -140,7 +142,9 @@ export class ObserverSingleton {
 
     for (const connector of connectors) {
       const remover = connector(component);
-      disconnectors.push(remover);
+      if (remover) {
+        disconnectors.push(remover);
+      }
     }
 
     this.connectedChildren.push(component);
@@ -250,6 +254,10 @@ export class ObserverSingleton {
     }
 
     for (const child of parent.children) {
+      if (child.isClone) {
+        continue;
+      }
+
       if (variableName && isValid(child[variableName])) {
         if (variableElements instanceof Array) {
           variableElements.push(child);
@@ -304,6 +312,9 @@ export class ObserverSingleton {
 
     for (const name of classNames) {
       if (child.classList.contains(name)) {
+        if (child.isClone) {
+          return false;
+        }
         return true;
       }
     }

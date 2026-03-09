@@ -32,13 +32,13 @@ export class NumberInput extends Component {
    * @param {ComponentParams} settings
    */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     settings.tagName = 'input',
-    super(settings);
+      super(settings);
 
     actionable(this, {
-      enableDefaultEvents: false,
+      enableMouseEvents: false,
     });
 
     valuable(this, {
@@ -205,7 +205,7 @@ export class NumberInput extends Component {
 
   setValue(value, skipCallback) {
     if (this.isFocused) {
-      if (typeof(value) == 'number') {
+      if (typeof (value) == 'number') {
         value = `${value}`;
       }
       value = this._parseNumberAsString(value);

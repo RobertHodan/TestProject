@@ -1,3 +1,4 @@
+import { isLetter } from '../utils/string.mjs';
 import { addEventListener, clamp, isArray, isNotArray, isNotNumber, isNotString, isNumber, isString, noop } from '../utils/utils.mjs';
 import { Listener } from './listener.mjs';
 
@@ -260,14 +261,12 @@ export class InputManager {
     let num = this.actionActivityMap[action];
 
     if (isNotNumber(num)) {
-      console.warn('Input Manager: Could not decrement action - action number is invalid');
       return;
     }
 
     num -= 1;
-
     if (num < 0) {
-      console.warn('Input Manager: Action was decremented below 0. Something is wrong.')
+      num = 0;
     }
 
     this.actionActivityMap[action] = num;
@@ -373,8 +372,49 @@ export class InputManager {
     return key;
   }
 
+  getClosestNavigableParent(child) {
+    if (!child || !child.parentElement) {
+      return false;
+    }
+
+    if (child.parentElement.navigable) {
+      return child.parentElement;
+    }
+
+    return this.getClosestNavigableParent(child.parentElement);
+  }
+
+  _isTypeable(element) {
+    if (!element) {
+      return false;
+    }
+
+    if (element.tagName == 'INPUT') {
+      return true;
+    }
+
+    if (element.hasAttribute('contenteditable')) {
+      return true;
+    }
+
+    return false;
+  }
+
   _addKeyboardListener() {
     const removeKeyDown = addEventListener(window, 'keydown', (event) => {
+      if (this._isTypeable(document.activeElement)) {
+        const parent = this.getClosestNavigableParent(document.activeElement);
+        if (parent && parent.navigable) {
+          // TODO: Think about context bindings
+          const keys = Object.keys(parent.navigable.bindings);
+          if (!keys.includes(event.key.toLowerCase())) {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+
       if (event.repeat) {
         return;
       }

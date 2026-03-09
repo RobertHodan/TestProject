@@ -1,0 +1,122 @@
+body {
+    background: url('../images/background-test.png');
+}
+
+.level-editor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.level-editor .mode-selector {
+    background: var(--action-bar-primary);
+    width: 100%;
+    height: 3em;
+    display: flex;
+    border-bottom: 0.15em solid var(--action-bar-border)
+}
+
+.level-editor button {
+    background: none;
+    border: none;
+    position: relative;
+    height: 100%;
+    display: flex;
+    padding: 0.4em 0;
+}
+
+.level-editor .mode-selector button.selected {
+    background: var(--action-bar-selected);
+}
+
+.level-editor .mode-selector button svg {
+    height: 100%;
+}
+
+/* .level-editor .mode-selector button.selected svg path {
+    fill: var(--icon-selected-primary) !important;
+}  */
+
+.level-editor button svg path:first-child {
+    stroke: rgb(180, 136, 59);
+    stroke-width: 0.1em;
+}
+
+/* Gem */
+.level-editor .gem-btn svg path:nth-child(1) {
+    fill: #E65050;
+}
+
+.level-editor .gem-btn svg path:nth-child(2) {
+    fill: #B53234;
+}
+
+.level-editor .gem-btn svg path:nth-child(3) {
+    fill: #F89090;
+}
+
+.level-editor .gem-btn.selected svg path:nth-child(1) {
+    fill: var(--icon-selected-primary);
+}
+
+.level-editor .gem-btn.selected svg path:nth-child(2) {
+    fill: var(--icon-selected-third);
+}
+
+.level-editor .gem-btn.selected svg path:nth-child(3) {
+    fill: var(--icon-selected-second);
+}
+
+/* Terrain */
+.level-editor .terrain-btn svg path:nth-child(1) {
+    fill: #1F5023;
+}
+
+.level-editor .terrain-btn svg path:nth-child(n+2) {
+    fill: #52AF55;
+}
+
+.level-editor .terrain-btn.selected svg path:nth-child(1) {
+    fill: var(--icon-selected-primary);
+}
+
+.level-editor .terrain-btn.selected svg path:nth-child(n+2) {
+    fill: var(--icon-selected-second);
+}
+
+/* Static Objects */
+.level-editor .static-object-btn svg path:nth-child(1) {
+    fill: #95A2F8;
+}
+
+.level-editor .static-object-btn svg path:nth-child(2) {
+    fill: #6A70E4;
+}
+
+.level-editor .static-object-btn svg path:nth-child(3) {
+    fill: #3548A3;
+}
+
+.level-editor .static-object-btn.selected svg path:nth-child(1) {
+    fill: var(--icon-selected-primary);
+}
+
+.level-editor .static-object-btn.selected svg path:nth-child(2) {
+    fill: var(--icon-selected-second);
+}
+
+.level-editor .static-object-btn.selected svg path:nth-child(3) {
+    fill: var(--icon-selected-third);
+}
+
+/* Interactible Objects */
+.level-editor .gear-btn svg path {
+    fill: #dbe3e4;
+    stroke: rgb(180, 136, 59);
+    stroke-width: 0.1em;
+}
+
+.level-editor .gear-btn.selected svg path {
+    fill: var(--icon-selected-primary);
+}

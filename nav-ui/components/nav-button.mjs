@@ -24,7 +24,7 @@ export class NavButton extends Button {
    * @param {ComponentParams} settings
    */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
 
     super(settings);
 
@@ -43,3 +43,4 @@ export class NavButton extends Button {
     applyClassName(this.dynamicIcon.el, className);
   }
 }
+customElements.define('c-nav-button', NavButton);

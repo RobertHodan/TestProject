@@ -32,14 +32,16 @@ export class ActionBar extends Component {
    * @param {ComponentParams} settings
    */
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
     super(settings);
 
     this.keyboardFocusable = settings.keyboardFocusable;
     this.btnClassName = settings.btnClassName;
-    
+
+    // TODO: Pass btnSettings or refactor
     this.createItemElement = (btnSettings) => {
-      return new Button(btnSettings);
+      const btn = document.createElement('c-button');
+      return btn;
     }
     if (isFunction(settings.createItemElement)) {
       this.createItemElement = settings.createItemElement;
@@ -60,7 +62,7 @@ export class ActionBar extends Component {
       if (isArray(btnSettings.navAction)) {
         length = btnSettings.navAction.length;
       }
-      
+
       let container;
       if (length != 1) {
         container = item.contentContainer || document.createElement('div');
@@ -131,6 +133,10 @@ export class ActionBar extends Component {
       return createLanguageLabel(label);
     }
 
-    return new Component({content: label});
+    const component = document.createElement('c-component');
+    component.content = label;
+
+    return component;
   }
 }
+customElements.define('c-action-bar', ActionBar);

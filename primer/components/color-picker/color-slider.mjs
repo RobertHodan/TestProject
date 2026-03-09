@@ -14,7 +14,7 @@ export const SLIDERAXIS = {
 
 export class ColorSlider extends Slider {
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
     super(settings);
 
     this.color = new ColorHWB(settings.color);
@@ -74,13 +74,14 @@ export class ColorSlider extends Slider {
     this.setBackgroundColor(this.color.asHex());
   }
 }
+customElements.define('c-color-slider', ColorSlider);
 
 const defaultsOpacity = {
   className: 'hue-slider',
 }
 export class OpacitySlider extends ColorSlider {
   constructor(settings) {
-    settings = {...defaultsOpacity, ...settings};
+    settings = { ...defaultsOpacity, ...settings };
     super(settings);
 
     this._bindColorEvents();
@@ -132,18 +133,19 @@ export class OpacitySlider extends ColorSlider {
     if (this.isHidden()) {
       return;
     }
-    
+
     const alpha = this.color.value[3] || 1;
     this.value = alpha * 100;
   }
 }
+customElements.define('c-opacity-slider', OpacitySlider);
 
 const defaultsHue = {
   className: 'hue-slider',
 }
 export class HueSlider extends ColorSlider {
   constructor(settings) {
-    settings = {...defaultsHue, ...settings};
+    settings = { ...defaultsHue, ...settings };
     super(settings);
 
     const hue = this._createHue();
@@ -165,7 +167,7 @@ export class HueSlider extends ColorSlider {
 
     const hwb = [...this.color.value];
     hwb[0] = 360 - 360 * (this.value / 100);
-    
+
     this.color.setValue(hwb);
   }
 
@@ -207,13 +209,13 @@ export class HueSlider extends ColorSlider {
 
     const gradientHoriz = this.canvasContext.createLinearGradient(0, 0, 1530, 1);
 
-    gradientHoriz.addColorStop(0/6, 'rgb(255, 0, 0)');
-    gradientHoriz.addColorStop(1/6, 'rgb(255, 0, 255)');
-    gradientHoriz.addColorStop(2/6, 'rgb(0, 0, 255)');
-    gradientHoriz.addColorStop(3/6, 'rgb(0, 255, 255)');
-    gradientHoriz.addColorStop(4/6, 'rgb(0, 255, 0)');
-    gradientHoriz.addColorStop(5/6, 'rgb(255, 255, 0)');
-    gradientHoriz.addColorStop(6/6, 'rgb(255, 0, 0)');
+    gradientHoriz.addColorStop(0 / 6, 'rgb(255, 0, 0)');
+    gradientHoriz.addColorStop(1 / 6, 'rgb(255, 0, 255)');
+    gradientHoriz.addColorStop(2 / 6, 'rgb(0, 0, 255)');
+    gradientHoriz.addColorStop(3 / 6, 'rgb(0, 255, 255)');
+    gradientHoriz.addColorStop(4 / 6, 'rgb(0, 255, 0)');
+    gradientHoriz.addColorStop(5 / 6, 'rgb(255, 255, 0)');
+    gradientHoriz.addColorStop(6 / 6, 'rgb(255, 0, 0)');
 
     this.canvasContext.fillStyle = gradientHoriz;
     this.canvasContext.fillRect(0, 0, 1530, 1);
@@ -221,3 +223,4 @@ export class HueSlider extends ColorSlider {
     return canvas;
   }
 }
+customElements.define('c-hue-slider', HueSlider);

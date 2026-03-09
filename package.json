@@ -1,0 +1,9 @@
+{
+  "name": "helloworld",
+  "main": "index.html",
+  "nodejs": true,
+  "dependencies": {
+    "@mapbox/node-pre-gyp": "^2.0.3",
+    "better-sqlite3": "^12.6.2"
+  }
+}

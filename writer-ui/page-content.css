@@ -1,0 +1,6 @@
+.page-content {
+    padding: 1em;
+    overflow: scroll;
+    display: block;
+    color: var(--text-color-main);
+}

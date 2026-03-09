@@ -6,13 +6,13 @@ import { noop } from '../utils/utils.mjs';
  * @property {Function} action
  */
 const requisites = {
-  action: function () {
+  action: function() {
     this._onAction();
   },
   onClick: noop,
   onDown: noop,
-  down: function () {
-    isDown = true;
+  down: function() {
+    this.actionable.isDown = true;
     this.onDown();
 
     this.action();
@@ -22,15 +22,15 @@ const requisites = {
     }
   },
   onRelease: noop,
-  release: function () {
+  release: function() {
     this.onRelease();
 
     this.actionable.isDown = false;
     this.actionable.autoCooldown = this.actionable.autoCooldownDefault;
     clearTimeout(this.actionable.timeout);
   },
-  repeater: function () {
-    if (this.actionable.enableDefaultEvents && this.actionable.continuousActionOnHold) {
+  repeater: function() {
+    if (this.actionable.enableMouseEvents && this.actionable.continuousActionOnHold) {
       if (!this.actionable.isDown) {
         return;
       }
@@ -46,8 +46,11 @@ const requisites = {
     }
   },
   _onAction: noop,
-  setAction: function (actionCallback) {
+  setAction: function(actionCallback) {
     this._onAction = actionCallback || noop;
+  },
+  enableMouseEvents: function(settings) {
+    enableMouseEvents(this, settings);
   },
 }
 
@@ -60,6 +63,26 @@ const internals = {
   autoCooldown: undefined, // Set to default on initialization
   isDown: false,
   timeout: undefined,
+}
+
+function enableMouseEvents(component, settings = {}) {
+  component.onClick = () => {
+    component.action();
+  };
+
+  if (settings.onClick != noop) {
+    component.onClick = settings.onClick;
+  }
+
+  component.addEventListener('mousedown', () => {
+    component.down();
+  });
+  component.addEventListener(document, 'mouseup', () => {
+    component.release();
+  });
+  component.addEventListener(window, 'blur', () => {
+    component.release();
+  });
 }
 
 /**
@@ -76,24 +99,8 @@ export function actionable(component, settings) {
 
   addMutator(component, internals, requisites, settings);
 
-  if (settings && settings.enableDefaultEvents) {
-    component.onClick = () => {
-      component.action();
-    };
-
-    if (settings.onClick != noop) {
-      component.onClick = settings.onClick;
-    }
-
-    component.addEventListener('mousedown', () => {
-      component.down();
-    });
-    component.addEventListener(document, 'mouseup', () => {
-      component.release();
-    });
-    component.addEventListener(window, 'blur', () => {
-      component.release();
-    });
+  if (settings && settings.enableMouseEvents) {
+    enableMouseEvents(component);
   }
 }
 

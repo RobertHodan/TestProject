@@ -5,7 +5,8 @@
  * @property {string?} className
  */
 
-import { clamp, clearElement, isIterable, noop } from '../utils/utils.mjs';
+import { hasSpecifiedChild } from '../utils/element.mjs';
+import { clamp, clearElement, isFunction, isIterable, isString, noop } from '../utils/utils.mjs';
 
 const defaults = {
 }
@@ -31,29 +32,28 @@ export class Component extends HTMLElement {
 
     this.isComponent = true;
     this.isInitialized = false;
+    this.onInitialize = noop;
+    this.onUpdate = noop;
   }
 
   connectedCallback() {
-    console.log("Connected", this);
+    setTimeout(() => {
+      this.onRender();
+    }, 0);
   }
 
   disconnectedCallback() {
-    console.log("Disconnected", this);
   }
 
   append(child) {
     if (isIterable(child)) {
       for (const c of child) {
-        super.append(child);
+        super.append(c);
       }
       return;
     }
 
     super.append(child);
-
-    setTimeout(() => {
-      this.onRender();
-    }, 0);
   }
 
   prepend(child) {
@@ -70,16 +70,32 @@ export class Component extends HTMLElement {
   // Should be used to update any elements when data changes
   // By default, will trigger on "onRender"
   update() {
-
+    this.onUpdate();
   }
 
   initialize() {
+    if (isString(this.className) && this.className.length) {
+      const names = this.className.split(' ');
+      for (const name of names) {
+        if (name.length) {
+          this.classList.add(name);
+        }
+      }
+      delete this.className;
+    }
+
+    if (this.content) {
+      this.append(this.content);
+      delete this.content;
+    }
+
+    this.isInitialized = true;
+    this.onInitialize();
   }
 
   onRender() {
     if (!this.isInitialized) {
       this.initialize();
-      this.isInitialized = true;
     }
     this.update();
   }
@@ -97,6 +113,10 @@ export class Component extends HTMLElement {
   }
 
   getChildren() {
+    if (isIterable(this.items)) {
+      return this.items;
+    }
+
     return Array.from(this.children);
   }
 
@@ -224,4 +244,4 @@ export class Component extends HTMLElement {
   }
 }
 
-customElements.define('component-base', Component);
+customElements.define('c-component', Component);

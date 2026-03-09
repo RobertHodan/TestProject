@@ -129,10 +129,10 @@ export function linkCSS(cssLink, options = linkCSSDefaults) {
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_debounce
 export function debounce(func, wait, immediate) {
   var timeout;
-  return function () {
+  return function() {
     var context = this, args = arguments;
     clearTimeout(timeout);
-    timeout = setTimeout(function () {
+    timeout = setTimeout(function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     }, wait);
@@ -143,7 +143,7 @@ export function debounce(func, wait, immediate) {
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_throttle
 export function throttle(func, timeFrame) {
   var lastTime = 0;
-  return function (...args) {
+  return function(...args) {
     var now = new Date();
     if (now - lastTime >= timeFrame) {
       func(...args);
@@ -153,17 +153,11 @@ export function throttle(func, timeFrame) {
 }
 
 export function clamp(value, min, max) {
-  // If neither are provided, assume a "0 and 1" clamp
-  if (min == undefined && max == undefined) {
-    min = 0;
-    max = 1;
-  }
-
-  if (max != undefined && value > max) {
+  if (isNumber(max) && value > max) {
     value = max;
   }
 
-  if (min != undefined && value < min) {
+  if (isNumber(min) && value < min) {
     value = min;
   }
 
@@ -591,6 +585,10 @@ export function isIterable(element) {
     return false;
   }
 
+  if (isString(element)) {
+    return false;
+  }
+
   return typeof (element[Symbol.iterator]) === 'function';
 }
 
@@ -602,7 +600,11 @@ export function isNotDate(obj) {
   return !isDate();
 }
 
-export function isNumber(value) {
+export function isNumber(value, parseString) {
+  if (parseString && isString(value)) {
+    value = Number.parseFloat(value);
+  }
+
   return Number.isFinite(value);
 }
 

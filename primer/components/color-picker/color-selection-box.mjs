@@ -8,7 +8,7 @@ const defaults = {
 
 export class ColorSelectionBox extends Component {
   constructor(settings) {
-    settings = {...defaults, ...settings};
+    settings = { ...defaults, ...settings };
     super(settings);
 
     this.removeListenerColor = noop;
@@ -24,11 +24,11 @@ export class ColorSelectionBox extends Component {
     this.append(this.cursor);
 
     addMouseListener(this.el, undefined, (event) => {
-      let {x, y} = event;
-      const {left, top, width, height} = this.el.getBoundingClientRect(); 
+      let { x, y } = event;
+      const { left, top, width, height } = this.el.getBoundingClientRect();
       const cursorX = clamp(x - left, 0, width);
       const cursorY = clamp(y - top, 0, height);
-      
+
       let black = cursorY / height;
 
       const segmentNumMax = (1 - black) * 100;
@@ -86,10 +86,10 @@ export class ColorSelectionBox extends Component {
     if (!this.cursor) {
       return;
     }
-    
+
     const halfWidth = this.cursor.clientWidth / 2;
     const halfHeight = this.cursor.clientHeight / 2;
-    const {width, height} = this.el.getBoundingClientRect();
+    const { width, height } = this.el.getBoundingClientRect();
 
     x = clamp(x, 0, width);
     y = clamp(y, 0, height);
@@ -108,7 +108,7 @@ export class ColorSelectionBox extends Component {
       segmentWidth = 0;
     }
 
-    const whiteSegmentNum = segmentNumMax - (white * 100); 
+    const whiteSegmentNum = segmentNumMax - (white * 100);
 
     const x = segmentWidth * whiteSegmentNum;
     const y = height * black;
@@ -128,7 +128,7 @@ export class ColorSelectionBox extends Component {
 
   getSize() {
     const rect = this.el.getBoundingClientRect();
-    
+
     return [rect.width, rect.height];
   }
 
@@ -156,7 +156,7 @@ export class ColorSelectionBox extends Component {
 
   updateColor() {
     const [hue, white, black] = this.hwb.value;
-    
+
     this.updateCursorPosition();
     this.updateCursorColor();
     this.setBackgroundColor(`hwb(${hue}deg 0 0)`);
@@ -205,3 +205,4 @@ export class ColorSelectionBox extends Component {
     return canvas;
   }
 }
+customElements.define('c-color-selection-box', ColorSelectionBox);

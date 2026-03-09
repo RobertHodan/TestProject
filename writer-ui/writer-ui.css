@@ -1,0 +1,158 @@
+@import './chapter-sidebar.css';
+@import './page-content.css';
+
+body {
+    background: rgb(112, 112, 121);
+}
+
+.novel-select {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.novel-select .novel-btn {
+    border: 0.15em solid rgb(235, 231, 231);
+    width: 15em;
+    height: 20em;
+    display: flex;
+    background: rgb(77, 78, 86);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.novel-select .create-btn {
+    user-select: none;
+}
+
+.novel-btn .label {
+    font-size: 2em;
+}
+
+.novel-btn .editable-label input {
+    font-size: 2em;
+    width: 100%;
+}
+
+.modal-manager {
+  position: fixed;
+}
+
+.modal-container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content {
+  flex-grow: 1;
+  display: flex;
+}
+
+timeline-component {
+  flex-grow: 1;
+  background: var(--background-modal-main);
+}
+
+timeline-component .dates {
+  display: flex;
+  box-sizing: border-box;
+  margin-top: 0.5em;
+}
+
+timeline-component .day-number,
+timeline-component .day-name,
+timeline-component .description,
+timeline-component .events {
+  font-size: 1.3em;
+  color: white;
+  padding: 0 0.5em;
+  justify-self: center;
+}
+
+timeline-component .date {
+  width: inherit;
+  flex-grow: 1;
+  min-height: 25em;
+  box-sizing: border-box;
+  position: relative;
+}
+
+timeline-component .months,
+timeline-component .years {
+  height: 2em;
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+}
+
+timeline-component .month,
+timeline-component .year {
+  height: 100%;
+  width: 1em;
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+}
+
+timeline-component .segment-marker {
+  font-size: 1em;
+  border: 0.1em solid var(--border-light);
+  height: 1em;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-top: none;
+  top: 2.5em;
+}
+
+timeline-component .month,
+timeline-component .year {
+  justify-content: center;
+} 
+
+timeline-component span {
+  font-size: 1.5em;
+  height: 100%;
+  color: var(--text-color-main);
+  display: flex;
+  align-items: center;
+}
+
+.timescale-day .month,
+.timescale-day .year,
+.timescale-month .year {
+  justify-content: unset;
+}
+
+.timescale-day span,
+.timescale-month .years span {
+  position: sticky;
+  left: 50%;
+  width: min-content;
+}
+
+.timescale-day .month-name,
+.timescale-day .year-name,
+.timescale-month .year-name {
+  position: relative;
+  left: -50%;
+  padding: 0 0.5em;
+}
+
+.timescale-month .day-number,
+.timescale-month .day-name,
+.timescale-year .day-number,
+.timescale-year .day-name,
+.timescale-year .months {
+  display: none;
+}
